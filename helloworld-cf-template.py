@@ -1,7 +1,7 @@
 """Generating CloudFormation template."""
 from ipaddress import ip_network
-from requests import get
 
+from ipify import get_ip
 
 from troposphere import (
     Base64,
@@ -15,6 +15,7 @@ from troposphere import (
 )
 
 ApplicationPort = "3000"
+PublicCidrIp = str(ip_network(get_ip()))
 
 t = Template()
 
@@ -33,6 +34,12 @@ t.add_resource(ec2.SecurityGroup(
     SecurityGroupIngress=[
         ec2.SecurityGroupRule(
             IpProtocol="tcp",
+            FromPort="22",
+            ToPort="22",
+            CidrIp=PublicCidrIp,
+        ),
+        ec2.SecurityGroupRule(
+            IpProtocol="tcp",
             FromPort=ApplicationPort,
             ToPort=ApplicationPort,
             CidrIp="0.0.0.0/0",
@@ -45,12 +52,12 @@ ud = Base64(Join('\n', [
     "sudo yum install --enablerepo=epel -y nodejs",
     "wget http://bit.ly/2vESNuc -O /home/ec2-user/helloworld.js",
     "wget http://bit.ly/2vVvT18 -O /etc/init/helloworld.conf",
-    "sudo start helloworld"
+    "start helloworld"
 ]))
 
 t.add_resource(ec2.Instance(
     "instance",
-    ImageId="ami-0f72ddc57775ccf46",
+    ImageId="ami-25615740",
     InstanceType="t2.micro",
     SecurityGroups=[Ref("SecurityGroup")],
     KeyName=Ref("KeyPair"),

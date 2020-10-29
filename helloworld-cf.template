@@ -1,4 +1,4 @@
-Description: 'Effective DevOps in AWS: HelloWorld web application'
+Description: 'Effective DevOps in AWS: HelloWorld web application v2'
 Outputs:
   InstancePublicIp:
     Description: Public IP of our instance.
@@ -21,6 +21,10 @@ Resources:
     Properties:
       GroupDescription: Allow SSH and TCP/3000 access
       SecurityGroupIngress:
+        - CidrIp: 122.172.113.107/32
+          FromPort: '22'
+          IpProtocol: tcp
+          ToPort: '22'
         - CidrIp: '0.0.0.0/0'
           FromPort: '3000'
           IpProtocol: tcp
@@ -28,7 +32,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
   instance:
     Properties:
-      ImageId: ami-0f72ddc57775ccf46
+      ImageId: ami-25615740
       InstanceType: t2.micro
       KeyName: !Ref 'KeyPair'
       SecurityGroups:
@@ -40,6 +44,6 @@ Resources:
             - sudo yum install --enablerepo=epel -y nodejs
             - wget http://bit.ly/2vESNuc -O /home/ec2-user/helloworld.js
             - wget http://bit.ly/2vVvT18 -O /etc/init/helloworld.conf
-            - sudo start helloworld
+            - start helloworld
     Type: AWS::EC2::Instance
 
