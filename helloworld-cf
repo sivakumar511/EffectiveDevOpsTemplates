@@ -21,7 +21,7 @@ Resources:
     Properties:
       GroupDescription: Allow SSH and TCP/3000 access
       SecurityGroupIngress:
-        - CidrIp: 122.172.113.107/32
+        - CidrIp: '0.0.0.0/0'
           FromPort: '22'
           IpProtocol: tcp
           ToPort: '22'
@@ -29,6 +29,10 @@ Resources:
           FromPort: '3000'
           IpProtocol: tcp
           ToPort: '3000'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '-1'
+          IpProtocol: icmp
+          ToPort: '-1'
     Type: AWS::EC2::SecurityGroup
   instance:
     Properties:
